@@ -1,0 +1,113 @@
+--1.	Create the following tables and their relationships:
+-- a.
+ CREATE TABLE companies (
+     company_id INT PRIMARY KEY,
+     company_name VARCHAR(255)
+ );
+ INSERT INTO companies (company_id, company_name)
+VALUES 
+ (1, 'Astana Motors'),
+ (2, 'Apple'),
+ (3, 'Samsung'),
+ (4, 'Vivo'),
+ (5, 'Alma TV');
+
+-- b.
+ CREATE TABLE vehicles (
+     vehicle_id INT PRIMARY KEY,
+     vehicle_type VARCHAR(255),
+     company_id INT,
+     FOREIGN KEY (company_id) REFERENCES companies(company_id)
+ );
+ INSERT INTO vehicles (vehicle_id, vehicle_type, company_id)
+ VALUES
+ (1, 'Bus', 1),
+ (2, 'Truck', 2),
+ (3, 'Van', 3),
+ (4, 'Car', 4),
+ (5, 'Bike', 5);
+
+-- c.
+ CREATE TABLE cities (
+     city_id INT PRIMARY KEY,
+     city_name VARCHAR(255),
+     country_id INT
+ );
+ INSERT INTO cities (city_id, city_name, country_id)
+ VALUES
+ (1, 'Almaty', 1),
+ (2, 'Astana', 1),
+ (3, 'New-York', 2),
+ (4, 'Amsterdam', 2),
+ (5, 'Moscow', 3),
+ (6, 'Orenburg', 3);
+
+-- d.
+ CREATE TABLE routes (
+     route_id INT PRIMARY KEY,
+   city_id INT,
+     FOREIGN KEY (city_id) REFERENCES cities(city_id)
+ );
+ INSERT INTO routes (route_id, city_id)
+ VALUES
+ (1, 1),
+ (2, 2),
+ (3, 3),
+ (4, 4),
+ (5, 5);
+
+-- e.
+ CREATE TABLE transport_types (
+     transport_id INT PRIMARY KEY,
+     transport_name VARCHAR(255),
+     average_speed DECIMAL
+ );
+ INSERT INTO transport_types (transport_id, transport_name, average_speed)
+ VALUES
+ (1, 'Bus', 60.5),
+ (2, 'Truck', 50.0),
+ (3, 'Van', 45.3),
+ (4, 'Car', 65.2),
+ (5, 'Bike', 20.8);
+
+-- 3. 		Executing SQL queries
+-- a.	Get a list of all companies and the number of their vehicles:
+-- 		i.	Usethe SELECTandJOIN statementto mergethe companiesandvehicles tables. 		Display the company name and the number of vehicles owned by each company.
+SELECT c.company_name, COUNT(v.vehicle_id) AS number_of_vehicles
+FROM companies c
+LEFT JOIN vehicles v ON c.company_id = v.company_id
+GROUP BY c.company_id, c.company_name;
+
+-- b.	Get a list of all companies whose names start with the letter 'A':
+SELECT company_name
+FROM companies
+WHERE company_name LIKE 'A%';
+
+-- c.	Get a list of all cities with country IDs from 3 to 10:
+SELECT city_name, country_id
+FROM cities
+WHERE country_id BETWEEN 3 AND 10;
+
+-- d.	Get a list of all vehicles and their types:
+SELECT vehicle_id, vehicle_type
+FROM vehicles;
+
+-- e.	Get a list of all routes and their corresponding cities:
+SELECT r.route_id, c.city_name
+FROM routes r
+JOIN cities c ON r.city_id = c.city_id;
+
+-- f.	First, show the transport_types table. After that, increase the average speed of all types of transport, if it is less than 100. Next, show the result.
+SELECT * FROM transport_types;
+UPDATE transport_types
+SET average_speed = average_speed + 10
+WHERE average_speed < 100;
+SELECT * FROM transport_types;
+
+-- g.	Get a list of all cities and their countries, including cities for which no countries are specified:
+SELECT city_name, country_id
+FROM cities;
+
+-- h.	Get a complete list of all types of transport:
+SELECT transport_name
+FROM transport_types;
